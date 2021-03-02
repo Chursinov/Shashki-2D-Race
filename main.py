@@ -41,8 +41,8 @@ class Game:
         self.hole = Label(self.game, image=self.hole_image, border='0', relief=FLAT)
         self.score_label = Label(self.game, text=self.score, font=('Arial', 20))
 
-        self.lose_label = Label(self.game, text=f'Вы проиграли!\nВаши очки: {self.score}.')
-        self.lose_button = Button(self.game, text='Повторить', command=self.start)
+        self.lose_label = Label(self.game)
+        self.lose_button = Button(self.game, text='Повторить', border='0', relief=FLAT, command=self.start)
 
         self.start()
         self.game.mainloop()
@@ -63,23 +63,22 @@ class Game:
         self.spawn('hole')
         self.loop()
 
-
     def lose(self):
-        self.lose_label.place(x=0, y=0)
-        self.lose_button.place(x=50, y=50)
+        self.lose_label.place(x=24, y=200, width=310, height=120)
+        self.lose_button.place(x=130, y=295, width=100)
         self.status = False
 
     def spawn(self, obstacle):
         self.y = 0
         if obstacle == 'hole':
-            self.hole_y = randint(0, 100)+10*self.y
+            self.hole_y = randint(0, 100) + 10 * self.y
             self.hole_position = randint(0, 2)
-            self.hole.place(x=25+105*self.hole_position, y=self.hole_y)
+            self.hole.place(x=25 + 105 * self.hole_position, y=self.hole_y)
         if obstacle == 'car':
-            self.car_y = randint(0, 100)+10*self.y
-            while self.car_position != self.hole_position:
+            self.car_y = randint(0, 100) + 10 * self.y
+            while self.car_position == self.hole_position:
                 self.car_position = randint(0, 2)
-            self.car.place(x=25+105*self.car_position, y=self.car_y)
+            self.car.place(x=25 + 105 * self.car_position, y=self.car_y)
 
     def loop(self):
         if self.status:
@@ -87,12 +86,14 @@ class Game:
             self.hole_y += self.speed
             self.car_y += self.speed
             self.hole.place_forget()
-            self.hole.place(x=25+105*self.hole_position, y=self.hole_y)
+            self.hole.place(x=25 + 105 * self.hole_position, y=self.hole_y)
             self.car.place_forget()
-            self.car.place(x=25+105*self.car_position, y=self.car_y)
+            self.car.place(x=25 + 105 * self.car_position, y=self.car_y)
             if self.hole_position == self.player_position and 647 >= self.hole_y >= 454:
+                self.lose_label.config(text=f'Вы проиграли!\nВаши очки: {self.score}.')
                 self.lose()
             if self.car_position == self.player_position and 647 >= self.car_y >= 454:
+                self.lose_label.config(text=f'Вы проиграли!\nВаши очки: {self.score}.')
                 self.lose()
             if self.hole_y >= self.height:
                 self.spawn('hole')
