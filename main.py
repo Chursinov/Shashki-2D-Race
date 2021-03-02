@@ -14,6 +14,7 @@ class Game:
         self.game.geometry(f'{self.width}x{self.height}')  # Определяем размер окна
         self.game.resizable(False, False)  # Окно нельзя расширять по осям Х и У
         self.game.attributes('-topmost', True)  # Окно при запуске уходит на передний план
+
         self.game.bind('<KeyRelease-Left>', lambda event: self.left())
         self.game.bind('<KeyRelease-a>', lambda event: self.left())
         self.game.bind('<KeyRelease-A>', lambda event: self.left())
@@ -23,7 +24,7 @@ class Game:
 
         self.status = True
         self.player_position = 1
-        self.speed = 5
+        self.speed = 20
         self.car_position = 0
         self.car_y = 0
         self.hole_position = 0
@@ -38,11 +39,11 @@ class Game:
         self.car_image = ImageTk.PhotoImage(Img.open('car.png'))
         self.car = Label(self.game, image=self.car_image, border='0', relief=FLAT)
         self.hole_image = ImageTk.PhotoImage(Img.open('hole.png'))
-        self.hole = Label(self.game, image=self.hole_image, border='0', relief=FLAT)
-        self.score_label = Label(self.game, text=self.score, font=('Arial', 20))
+        self.hole = Label(self.game, image=self.hole_image, bg='#c3c3c3', border='0', relief=FLAT)
+        self.score_label = Label(self.game, bg='#31681a', text=self.score, font=('Arial', 20))
 
-        self.lose_label = Label(self.game)
-        self.lose_button = Button(self.game, text='Повторить', border='0', relief=FLAT, command=self.start)
+        self.lose_label = Label(self.game, bg='#FFFFFF')
+        self.lose_button = Button(self.game, text='Повторить', bg='#FFFFFF', activebackground='#FFFFFF', border='0', relief=FLAT, command=self.start)
 
         self.start()
         self.game.mainloop()
@@ -58,7 +59,7 @@ class Game:
         self.y = 0
         self.background.place(x=0, y=0, relwidth=1, relheight=1)
         self.player.place(x=130, y=550)
-        self.score_label.place(x=360, y=50, width=50)
+        self.score_label.place(x=347, y=50, width=113)
         self.spawn('car')
         self.spawn('hole')
         self.loop()
@@ -66,6 +67,9 @@ class Game:
     def lose(self):
         self.lose_label.place(x=24, y=200, width=310, height=120)
         self.lose_button.place(x=130, y=295, width=100)
+        self.car.place_forget()
+        self.hole.place_forget()
+        self.player.place_forget()
         self.status = False
 
     def spawn(self, obstacle):
@@ -103,7 +107,7 @@ class Game:
                 self.score += 1
             self.score_label['text'] = self.score
 
-            self.game.after(150, self.loop)
+            self.game.after(50, self.loop)
 
     def left(self):
         if self.player_position == 0:
